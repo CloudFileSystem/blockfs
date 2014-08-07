@@ -66,11 +66,16 @@ public:
 
 		n = size / chunk_size;
 		r = size % chunk_size;
-		if (r != 0) n++;
 
 		for (i = 0; i < n; i++) {
 			write_chunk((data + i * chunk_size), chunk_size, i);
 		}
+
+		if (r != 0) {
+			write_chunk((data + i * chunk_size), r, i);
+		}
+
+		return 0;
 	}
 
 	/*
@@ -84,14 +89,12 @@ public:
 		n = size / chunk_size;
 		r = size % chunk_size;
 
-		if (r != 0) n++;
-
 		for (i = 0; i < n; i++) {
 			read_chunk((data + i * chunk_size), chunk_size, i);
 		}
 
 		if (r != 0) {
-			return 1;
+			read_chunk((data + i * chunk_size), r, i);
 		}
 
 		return 0;
@@ -99,24 +102,46 @@ public:
 
 protected:
 	/*
-	 * read_chunk
-	 */
-	int read_chunk(char *data, int size, int offset) {
-		FILE *file;
-
-		std::cout << "Read Hello World!" << std::endl;
-
-		return 0;
-	}
-
-	/*
 	 * write_chunk
 	 */
 	int write_chunk(char *data, int size, int offset) {
 		FILE *file;
+		char filename[256];
 
-		std::cout << "Write Hello World!" << std::endl;
+		std::cout << size << std::endl;
+		std::cout << offset << std::endl;
+		std::cout << "write chunk" << std::endl;
 
+		// ファイル名を作成(Hashの方がいいのかも知れない)
+		sprintf(filename, "./block/%0200d.blk", offset);
+
+		// ファイルを開いて書き込みを行う
+		file = fopen(filename, "wb");
+		fwrite(data, sizeof(char), size, file);
+
+		fclose(file);
+
+		return 0;
+	}
+	/*
+	 * read_chunk
+	 */
+	int read_chunk(char *data, int size, int offset) {
+		FILE *file;
+		char filename[256];
+
+		std::cout << size << std::endl;
+		std::cout << offset << std::endl;
+		std::cout << "read chunk" << std::endl;
+
+		// ファイル名を作成(Hashの方がいいのかも知れない)
+		sprintf(filename, "./block/%0200d.blk", offset);
+
+		// ファイルを開いて読み込みを行う
+		file = fopen(filename, "rb");
+		fread(data, sizeof(char), size, file);
+
+		fclose(file);
 		return 0;
 	}
 };
