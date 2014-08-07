@@ -1,11 +1,16 @@
 #
 # Makefile
 #
-all: main
+CC=g++
+TARGET = main
+#CFLAGS = -g -Wall
+LIBS = -lcrypto
 
-main: main.cpp
-	g++ -o main main.cpp
+all: $(TARGET)
+
+$(TARGET): $(TARGET).cpp sun.hpp
+	$(CC) $(CFLAGS) -o $(TARGET) $(TARGET).cpp $(LIBS)
 
 clean:
-	rm -rf *o main
+	$(RM) $(TARGET)
 
