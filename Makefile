@@ -11,6 +11,9 @@ all: $(TARGET)
 $(TARGET): $(TARGET).cpp sun.hpp
 	$(CC) $(CFLAGS) -o $(TARGET) $(TARGET).cpp $(LIBS)
 
+debug:
+	./main -d ./mnt
+
 mount:
 	./main ./mnt
 
