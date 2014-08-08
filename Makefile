@@ -5,11 +5,15 @@ CC=g++
 TARGET = main
 CFLAGS = -g -Wall
 LIBS = -lcrypto `pkg-config fuse --cflags --libs`
+BOOST_LIBS = -lboost_system -lboost_filesystem
 
 all: $(TARGET)
 
-$(TARGET): $(TARGET).cpp sun.hpp
-	$(CC) $(CFLAGS) -o $(TARGET) $(TARGET).cpp $(LIBS)
+$(TARGET): $(TARGET).cpp sun.hpp fuse.hpp
+	$(CC) $(CFLAGS) -o $(TARGET) $(TARGET).cpp $(LIBS) $(BOOST_LIBS)
+
+install:
+	sudo apt-get install libboost-all-dev
 
 debug:
 	./main -d ./mnt
