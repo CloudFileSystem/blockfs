@@ -9,7 +9,7 @@ BOOST_LIBS = -lboost_system -lboost_filesystem
 
 all: $(TARGET)
 
-$(TARGET): $(TARGET).cpp sun.hpp fuse.hpp
+$(TARGET): $(TARGET).cpp sun.hpp fuse.hpp metadata.hpp stat.hpp
 	$(CC) $(CFLAGS) -o $(TARGET) $(TARGET).cpp $(LIBS) $(BOOST_LIBS)
 
 install:
