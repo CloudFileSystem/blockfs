@@ -41,7 +41,20 @@ public:
 		return true;
 	}
 
+	vector<string> list_directory(string path) {
+		// File list
+		vector<string> directories;
 
+		// Get Directory Path Range File
+		pair<multimap<string, string>::iterator, multimap<string, string>::iterator> range;
+		range = path_map.equal_range(path);
+		for(multimap<string, string>::iterator it=range.first; it!=range.second; ++it) {
+			cout << it->first << "\t" << it->second << endl;
+			directories.push_back(it->second);
+		}
+
+		return directories;
+	}
 
 	bool remove_directory(string path) {
 		return true;

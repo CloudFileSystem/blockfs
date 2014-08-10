@@ -78,27 +78,6 @@ public:
 		//} else {
 		//	cout << "Not Found Path" << endl;
 		//}
-
-		//int res = 0;
-		//struct fuse_context *context =  fuse_get_context();
-		//memset(stbuf, 0, sizeof(struct stat));
-
-		//if (strcmp(path, "/") == 0) {
-		//	stbuf->st_mode = S_IFDIR | 0755;
-		//	stbuf->st_nlink = 2;
-		//	stbuf->st_uid = context->uid;
-		//	stbuf->st_gid = context->gid;
-		//} else if (strcmp(path, "/file") == 0) {
-		//	stbuf->st_mode = S_IFREG | 0755;
-		//	stbuf->st_nlink = 1;
-		//	stbuf->st_size = 0;
-		//	stbuf->st_uid = context->uid;
-		//	stbuf->st_gid = context->gid;
-		//} else {
-		//	res = -ENOENT;
-		//}
-
-		//return res;
 	}
 
 	/* ---------------------------------------------------------------------
@@ -106,11 +85,17 @@ public:
 	 * ------------------------------------------------------------------ */
 	static int fuse_readdir(const char *path, void *buff,
 		fuse_fill_dir_t filler, off_t offset, struct fuse_file_info *fi) {
-		if (strcmp(path, "/") != 0) return -ENOENT;
 
 		filler(buff, ".", NULL, 0);
 		filler(buff, "..", NULL, 0);
-		filler(buff, "test", NULL, 0);
+
+		vector<string> directories = metadata.list_directory(path);
+		vector<string>::iterator it = directories.begin();
+		for (it = directories.begin(); it != directories.end(); it++) {
+			cout << it->c_str() << "\t" << strcmp(it->c_str(), "/") << endl;
+			if (strcmp(it->c_str(), "/") != 0)
+				filler(buff, it->c_str(), NULL, 0);
+		}
 
 		return 0;
 	}
