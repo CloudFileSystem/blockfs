@@ -29,12 +29,15 @@ public:
 		 * File System Operation
 		 */
 		mkdir	= fuse_mkdir;
+		rmdir	= fuse_rmdir;
 		readdir	= fuse_readdir;
 
 		/*
 		 * File Operation Function
 		 */
+		access	= fuse_access;
 		open	= fuse_open;
+		create	= fuse_create;
 		read	= fuse_read;
 		write	= fuse_write;
 	}
@@ -101,18 +104,36 @@ public:
 	}
 
 	static int fuse_mkdir(const char *path, mode_t mode) {
-		cout << "Make Directory-----------------------------" << endl;
 		if (metadata.isExist(path) == false)
 			metadata.make_directory(path);
-		cout << "Make Directory-----------------------------" << endl;
+		return 0;
+	}
+
+	static int fuse_rmdir(const char *path) {
+		if (metadata.isExist(path) == true)
+			metadata.remove_directory(path);
 		return 0;
 	}
 
 	/* ---------------------------------------------------------------------
 	 *			File Operation Functions
 	 * ------------------------------------------------------------------ */
-	static int fuse_open(const char *path, struct fuse_file_info *fi) {
+	static int fuse_access(const char *path, int val) {
+		cout << "-ACCESS---------------------------------------" << endl;
 		return 0;
+	}
+
+	static int fuse_open(const char *path, struct fuse_file_info *fi) {
+		if (metadata.isExist(path) == false) return -ENOENT;;
+
+		cout << "-OPEN---------------------------------------" << endl;
+		return 0;
+	}
+
+	static int fuse_create(const char *path, mode_t mode, struct fuse_file_info *info) {
+		cout << "-CREATE---------------------------------------" << endl;
+		metadata.make_file(path);
+		return fuse_open(path, info);
 	}
 
 	static int fuse_read(const char *path, char *buf, size_t size, off_t offset, struct fuse_file_info *fi) {
@@ -120,7 +141,7 @@ public:
 	}
 
 	static int fuse_write(const char * path, const char *data, size_t size, off_t offset, struct fuse_file_info *fi) {
-		return 10;
+		return 0;
 	}
 };
 

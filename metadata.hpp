@@ -24,13 +24,16 @@ public:
 		make_directory("/");
 	}
 
+	/*----------------------------------------------------------------------
+	 * File System Operation
+	 *------------------------------------------------------------------- */
 	bool make_directory(string path) {
 		// Set Context Infomation of Stat
 		Stat new_directory;
 		new_directory.setDefaultContext().setDirectory();
-		boost::filesystem::path parser(path);
 
 		// Parse path
+		boost::filesystem::path parser(path);
 		string full_path = parser.string();
 		string file_path = parser.parent_path().string();
 		string file_name = parser.filename().string();
@@ -38,6 +41,28 @@ public:
 		// File path Mapping
 		path_map.insert(pair<string, string>(file_path, file_name));
 		file_map.insert(pair<string, Stat>(full_path, new_directory));
+		return true;
+	}
+
+	bool remove_directory(string path) {
+		// Parse path
+		boost::filesystem::path parser(path);
+		string full_path = parser.string();
+		string file_path = parser.parent_path().string();
+		string file_name = parser.filename().string();
+
+		// Remove File Map & Path Map
+		pair<multimap<string, string>::iterator, multimap<string, string>::iterator> range;
+		range = path_map.equal_range(file_path);
+		for(multimap<string, string>::iterator it=range.first; it!=range.second; ++it) {
+			if (strcmp(it->second.c_str(), file_name.c_str()) == 0) {
+				cout << it->first << "\t" << it->second << endl;
+				path_map.erase(it);
+			}
+		}
+		//path_map.erase(full_path);
+		file_map.erase(full_path);
+
 		return true;
 	}
 
@@ -56,7 +81,23 @@ public:
 		return directories;
 	}
 
-	bool remove_directory(string path) {
+	/*----------------------------------------------------------------------
+	 * File Operation
+	 *------------------------------------------------------------------- */
+	bool make_file(string path) {
+		// Set Context Infomation of Stat
+		Stat new_file;
+		new_file.setDefaultContext().setFile();
+
+		// Parse path
+		boost::filesystem::path parser(path);
+		string full_path = parser.string();
+		string file_path = parser.parent_path().string();
+		string file_name = parser.filename().string();
+
+		// File path Mapping
+		path_map.insert(pair<string, string>(file_path, file_name));
+		file_map.insert(pair<string, Stat>(full_path, new_file));
 		return true;
 	}
 
